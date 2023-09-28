@@ -1,7 +1,8 @@
+from abc import ABC, abstractmethod
 import uos
-import machine
 import utime
 from machine import Pin
+from commands import WifiController, WifiConfiguration
 
 led_state = "OFF"
 
@@ -9,85 +10,28 @@ print()
 print("Machine: \t" + uos.uname()[4])
 print("MicroPython: \t" + uos.uname()[3])
 
-class TableController:
-    def __init__(self, up_port: int, down_port: int) -> None:
-        self.up_pin = Pin(up_port, Pin.OUT)
-        self.down_pin = Pin(down_port, Pin.OUT)
+wifi_configuration = WifiConfiguration("", "")
+commands = WifiController()
 
-    def drive_up(self):
-        self.up_pin.value(1)
-        self.down_pin.value(0)
-    
-    def drive_down(self):
-        self.up_pin.value(0)
-        self.down_pin.value(1)
-
-    def stop(self):
-        self.up_pin.value(0)
-        self.down_pin.value(0)
-
-
-class ModemController():
-    def __init__(self) -> None:
-        self.timeout = 3000
-        self.uart = machine.UART(0, baudrate=115200)
-        
-    def send_command(self, command):
-        print("CMD: " + command)
-        self.uart.write(command)
-        self.wait_for_esp_response()
-        print()
-
-    def wait_for_esp_response(self):
-        previous_timestamp = utime.ticks_ms()
-        response = b""
-        while (utime.ticks_ms() - previous_timestamp) < self.timeout:
-            if self.uart.any():
-                response = b"".join([response, self.uart.read(1)])
-        print("resp:")
-        try:
-            print(response.decode())
-        except UnicodeError:
-            print(response)
-
-    def recieve_esp_data(self):
-        recv=bytes()
-        while self.uart.any()>0:
-            recv+=self.uart.read(1)
-        res=recv.decode('utf-8')
-        return res
-
-    def connect_wifi(self, cmd):
-        print("CMD: " + cmd)
-        self.uart.write(cmd)
-        utime.sleep(7.0)
-        self.wait_for_esp_response()
-        print()
-
-    
-
-send_command('AT\r\n')          #Test AT startup
-send_command('AT+GMR\r\n')      #Check version information
-send_command('AT+CIPSERVER=0\r\n')      #Check version information
-send_command('AT+RST\r\n')      #Check version information
-send_command('AT+RESTORE\r\n')  #Restore Factory Default Settings
-send_command('AT+CWMODE?\r\n')  #Query the Wi-Fi mode
-send_command('AT+CWMODE=1\r\n') #Set the Wi-Fi mode = Station mode
-send_command('AT+CWMODE?\r\n')  #Query the Wi-Fi mode again
-connect_wifi('AT+CWJAP="A1601","123456789104"\r\n', timeout=5000) #Connect to AP
-send_command('AT+CIFSR\r\n',timeout=5000)    #Obtain the Local IP Address
-send_command('AT+CIPMUX=1\r\n')    #Obtain the Local IP Address
-utime.sleep(1.0)
-send_command('AT+CIPSERVER=1,80\r\n')    #Obtain the Local IP Address
-utime.sleep(1.0)
-
+commands.test_connection()
+commands.checkVersion()
+commands.checkServerVersion()
+commands.resetServer()
+commands.restoreDefaultSettings()
+commands.queryWifiMode()
+commands.setWifiStationMode()
+commands.queryWifiMode()
+commands.connectWifi(wifi_configuration)
+commands.queryIP()
+commands.setIPMux()
+commands.setIPPort()
 
 print ('Starting connection to ESP8266...')
 while True:
-    response =""
-    response=recieve_esp_data()
-
+    response = ""
+    response = recieve_esp_data()
     utime.sleep(2.0)
+
     if '+IPD' in response: # if the buffer contains IPD(a connection), then respond with HTML handshake
         id_index = response.find('+IPD')
         if '?led_on' in response:
