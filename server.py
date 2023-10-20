@@ -1,8 +1,6 @@
-from abc import ABC, abstractmethod
 import uos
 import utime
-from machine import Pin
-from commands import WifiController, WifiConfiguration
+from wifi.wifi import CreateWifi
 
 led_state = "OFF"
 
@@ -10,23 +8,10 @@ print()
 print("Machine: \t" + uos.uname()[4])
 print("MicroPython: \t" + uos.uname()[3])
 
-wifi_configuration = WifiConfiguration("", "")
-commands = WifiController()
+wifi = CreateWifi("", "")
 
-commands.test_connection()
-commands.checkVersion()
-commands.checkServerVersion()
-commands.resetServer()
-commands.restoreDefaultSettings()
-commands.queryWifiMode()
-commands.setWifiStationMode()
-commands.queryWifiMode()
-commands.connectWifi(wifi_configuration)
-commands.queryIP()
-commands.setIPMux()
-commands.setIPPort()
+wifi.initialize()
 
-print ('Starting connection to ESP8266...')
 while True:
     response = ""
     response = recieve_esp_data()

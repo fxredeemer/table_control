@@ -3,19 +3,18 @@ import utime
 
 class LowLevelModemController():
     def __init__(self) -> None:
-        self.timeout = 3000
         self.uart = machine.UART(0, baudrate=115200)
         
-    def send_command(self, command: str):
+    def send_command(self, command: str, timeout: int = 3000):
         print("Sending Command: " + command)
         encoded = str.encode("AT+" + command + "\r\n") 
         self.uart.write(encoded)
-        self.wait_for_response()
+        self.wait_for_response(timeout)
 
-    def wait_for_response(self):
+    def wait_for_response(self, timeout: int = 3000):
         previous_timestamp = utime.ticks_ms()
         response = b""
-        while (utime.ticks_ms() - previous_timestamp) < self.timeout:
+        while (utime.ticks_ms() - previous_timestamp) < timeout:
             if self.uart.any():
                 response = b"".join([response, self.uart.read(1)])
         try:
