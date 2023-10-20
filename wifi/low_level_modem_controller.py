@@ -11,6 +11,9 @@ class LowLevelModemController():
         self.uart.write(encoded)
         self.wait_for_response(timeout)
 
+    def write_to_buffer(self, content: str):
+        self.uart.write(str.encode(content +'\r\n'))
+
     def wait_for_response(self, timeout: int = 3000):
         previous_timestamp = utime.ticks_ms()
         response = b""
