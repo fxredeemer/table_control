@@ -1,44 +1,33 @@
 <!DOCTYPE HTML>
-<html>
-
+<html id="base">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <style>
-        html {
-            font-family: Arial;
-            display: inline-block;
-            margin: 0px auto;
-            text-align: center;
-        }
-
-        .button {
-            background-color: #ce1b0e;
-            border: none;
-            color: white;
-            padding: 16px 40px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-
-        .button1 {
-            background-color: #000000;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
 </head>
-
-<body>
-    <h2>Raspberry Pi Pico Web Server</h2>
-    
-    <p> <i class="fas fa-lightbulb fa-3x" style="color:#c81919;"></i> <a href="?led_on"><button class="button">LED
-                ON</button></a> </p>
-    <p> <i class="far fa-lightbulb fa-3x" style="color:#000000;"></i> <a href="?led_off"><button
-                class="button button1">LED OFF</button></a> </p>
+<body class="container mx-auto min-h-screen flex flex-col">
+    <div class="flex flex-col m-8 grow">
+        <h1 class="text-4xl font-bold mb-8">Remote Desktop Controller</h1>
+        <div class="flex gap-3">
+            <a class="btn btn-primary" href="?tableup">
+                Table up
+            </a>
+            <a class="btn btn-secondary" href="?tabledown">
+                Table Down
+            </a>
+            <a class="btn btn-error" href="?tablestop">
+                stop
+            </a>
+        </div>
+    </div>
+    <div class="flex justify-end m-3">
+        <select class="select select-bordered max-w-xs" data-choose-theme>
+            <option value="dark">Dark</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="light">light</option>
+          </select>
+    </div>
 </body>
 
 </html>

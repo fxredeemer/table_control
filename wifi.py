@@ -35,10 +35,10 @@ class Wifi:
         self.html = page.read()
         self.connected = True
 
-    def listen(self) -> None:
+    def listen(self) -> bool:
         if not self.connected:
             print("Not Connected Yet!")
-            return
+            return False
 
         print("Waiting For connection...")
         connection, address = self.socket.accept()
@@ -54,10 +54,12 @@ class Wifi:
             if queryPart in request:
                 value()
 
+        return True
+
     def read_request(self, connection):
-        request_buffer = connection.recv(1024)
-        print(request_buffer)
-        return str(request_buffer)
+        buffer = connection.recv(1024)
+        print(buffer)
+        return str(buffer)
 
 
 def CreateWifi(uuid: str, password: str, handlers: Dict[str, Callable[[], None]]) -> Wifi:
