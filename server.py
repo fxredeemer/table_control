@@ -1,9 +1,6 @@
 import uos
-from wifi.wifi import CreateWifi
+from wifi import CreateWifi
 
-led_state = "OFF"
-
-print()
 print("Machine: \t" + uos.uname()[4])
 print("MicroPython: \t" + uos.uname()[3])
 
@@ -16,7 +13,7 @@ handlers = {
 
 wifi = CreateWifi("", "", handlers)
 
-wifi.initialize()
+wifi.initialize_connection()
 
 while True:
-    response = wifi.readData()
+    wifi.listen()
